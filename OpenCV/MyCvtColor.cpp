@@ -13,6 +13,12 @@ using namespace cv;
 using namespace myCv;
 using namespace std;
 
+const string urlOutput = "/Users/vmio69/Desktop/OpenCV/Output/";
+
+MyCvtColor::MyCvtColor(void){
+    
+}
+
 int MyCvtColor::avg3(int a1, int a2, int a3)
 {
     return (a1+a2+a3)/3;
@@ -227,15 +233,14 @@ void MyCvtColor::splitChannel(const Mat &matFrom, Mat &matTo, int channel)
     matTo = cvCreateMat(s.height, s.width, CV_8UC3);
     int w = s.width;
     int h = s.height;
-    int channels = matFrom.channels();
     matTo = Mat::zeros(h,w,CV_8UC3);
     if(matFrom.isContinuous() && matTo.isContinuous())
     {
         int size;
         uchar *to = matTo.ptr(0);
         const uchar *from = matFrom.ptr(0);
-        size = w*h*channels;
-        for(int i = channel; i < size; i+=channels)
+        size = w*h*3;
+        for(int i = channel; i < size; i+=3)
         {
             to[i] = from[i];
         }
@@ -246,7 +251,7 @@ void MyCvtColor::splitChannel(const Mat &matFrom, Mat &matTo, int channel)
         {
             const uchar *from = matFrom.ptr(i);
             uchar *to = matTo.ptr(i);
-            for(int j = channel; j < w; j+=channels)
+            for(int j = channel; j < w; j+=3)
             {
                 to[j] = from[j]; 
             }
@@ -285,4 +290,28 @@ void MyCvtColor::cvtGrayChannel(const Mat &matFrom, Mat &matTo, int color)
             }
         }
     }
+}
+
+void MyCvtColor::cvtGrayAllChanels(const Mat &matFrom, string colorSpace)
+{
+    string fileName;
+    string fileType = ".bmp";
+    Mat image;
+    
+    for(int i = 0; i < 3; i++)
+    {
+        fileName = urlOutput + colorSpace + "/" + colorSpace.substr(i,1) + fileType;
+        splitChannel(matFrom, image, i);
+        imwrite(fileName, image);
+    }
+    for(int i = 3; i < 6; i++)
+    {
+        fileName = urlOutput + colorSpace + "/gray" + colorSpace.substr(i-3,1) + fileType;
+        cvtGrayChannel(matFrom, image,i-3);
+        imwrite(fileName, image);
+    }
+}
+
+MyCvtColor::~MyCvtColor(void){
+    
 }
