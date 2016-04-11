@@ -39,7 +39,7 @@ namespace myCv {
         
         void cvtGray(const Mat &matFrom, Mat &matTo, double c1 = 1, double c2 = 1, double c3 = 1);
         
-        void cvtGrayAllChanels(const Mat &matFrom, string colorSpace);
+//        void cvtGrayAllChanels(const Mat &matFrom, string colorSpace);
         
         ~MyCvtColor(void);
     };

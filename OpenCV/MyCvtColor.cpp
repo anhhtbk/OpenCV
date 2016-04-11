@@ -324,27 +324,33 @@ void MyCvtColor::cvtGray(const Mat &matFrom, Mat &matTo, double c1, double c2, d
     }
 }
 
-void MyCvtColor::cvtGrayAllChanels(const Mat &matFrom, string colorSpace)
-{
-    string fileName;
-    string fileType = ".bmp";
-    Mat image;
-    
-    for(int i = 0; i < 3; i++)
-    {
-        fileName = urlOutput + colorSpace + "/" + colorSpace.substr(i,1) + fileType;
-        splitChannel(matFrom, image, i);
-        imwrite(fileName, image);
-    }
-    for(int i = 3; i < 6; i++)
-    {
-        fileName = urlOutput + colorSpace + "/gray" + colorSpace.substr(i-3,1) + fileType;
-        cvtGrayChannel(matFrom, image,i-3);
-        imwrite(fileName, image);
-    }
-    cvtGray(matFrom, image);
-    imwrite(urlOutput + colorSpace + "/grayAll.png", image);
-}
+//void MyCvtColor::cvtGrayAllChanels(const Mat &matFrom, string colorSpace)
+//{
+//    string fileName;
+//    string fileType = ".bmp";
+//    Mat image;
+//    time_t startTime;
+//    time_t stopTime;
+//    for(int i = 0; i < 3; i++)
+//    {
+//        fileName = urlOutput + colorSpace + "/" + colorSpace.substr(i,1) + fileType;
+//        time(&startTime);
+//        splitChannel(matFrom, image, i);
+//        time(&stopTime);
+//        
+//        imwrite(fileName, image);
+//    }
+//    for(int i = 3; i < 6; i++)
+//    {
+//        fileName = urlOutput + colorSpace + "/gray" + colorSpace.substr(i-3,1) + fileType;
+//        
+//        cvtGrayChannel(matFrom, image,i-3);
+//        
+//        imwrite(fileName, image);
+//    }
+//    cvtGray(matFrom, image);
+//    imwrite(urlOutput + colorSpace + "/grayAll.png", image);
+//}
 
 MyCvtColor::~MyCvtColor(void){
     
