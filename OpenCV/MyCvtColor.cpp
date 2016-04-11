@@ -342,6 +342,8 @@ void MyCvtColor::cvtGrayAllChanels(const Mat &matFrom, string colorSpace)
         cvtGrayChannel(matFrom, image,i-3);
         imwrite(fileName, image);
     }
+    cvtGray(matFrom, image);
+    imwrite(urlOutput + colorSpace + "/grayAll.png", image);
 }
 
 MyCvtColor::~MyCvtColor(void){
