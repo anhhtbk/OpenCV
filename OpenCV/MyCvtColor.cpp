@@ -292,6 +292,38 @@ void MyCvtColor::cvtGrayChannel(const Mat &matFrom, Mat &matTo, int color)
     }
 }
 
+void MyCvtColor::cvtGray(const Mat &matFrom, Mat &matTo, double c1, double c2, double c3)
+{
+    CvSize s = matFrom.size();
+    
+    matTo = cvCreateMat(s.height, s.width, CV_8UC1);
+    int w = s.width;
+    int h = s.height;
+    if(matFrom.isContinuous() && matTo.isContinuous())
+    {
+        int size = w*h;
+        uchar *to = matTo.ptr(0);
+        const uchar *from = matFrom.ptr(0);
+        
+        for(int i = 0; i < size; i++)
+        {
+            to[i] = (from[3*i+0]*c1 + from[3*i+1]*c2 + from[3*i+2]*c3)/(c1+c2+c3);
+        }
+    }
+    else
+    {
+        for(int i = 0; i < h; i++)
+        {
+            const uchar *from = matFrom.ptr(i);
+            uchar *to = matTo.ptr(i);
+            for(int j = 0; j < w; j++)
+            {
+                to[j] = (from[3*j+0]*c1 + from[3*j+1]*c2 + from[3*j+2]*c3)/(c1+c2+c3);
+            }
+        }
+    }
+}
+
 void MyCvtColor::cvtGrayAllChanels(const Mat &matFrom, string colorSpace)
 {
     string fileName;
