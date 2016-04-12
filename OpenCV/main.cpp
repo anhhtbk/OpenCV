@@ -18,39 +18,44 @@ using namespace std;
 using namespace myCv;
 
 const string urlOutput = "/Users/vmio69/Desktop/OpenCV/Output/";
-const string urlInput = "/Users/vmio69/Desktop/OpenCV/OpenCV/flower.jpg";
+const string urlInput = "/Users/vmio69/Desktop/OpenCV/flower.jpg";
 
 static MyCvtColor mCvt1 = MyCvtColor();
+
 
 void cvtGrayAllChanels(const Mat &matFrom, string colorSpace)
 {
     string fileName;
     string fileType = ".bmp";
     Mat image;
-    timeval timeStart;
-    timeval timeStop;
-    
+    clock_t c_start, c_end;
     for(int i = 0; i < 3; i++)
     {
         fileName = urlOutput + colorSpace + "/" + colorSpace.substr(i,1) + fileType;
-        gettimeofday(&timeStart, NULL);
+        
+        c_start = clock();
         mCvt1.splitChannel(matFrom, image, i);
-        gettimeofday(&timeStop, NULL);
-        cout << "Run time: " << (timeStop.tv_sec*1000 + timeStop.tv_usec/1000) - (timeStart.tv_sec*1000 + timeStart.tv_usec/1000) << endl;
+        c_end = clock();
+        cout << "Run time Split: " << 1000.0 * (c_end-c_start) / CLOCKS_PER_SEC << " ms\n";
         
         imwrite(fileName, image);
     }
     for(int i = 3; i < 6; i++)
     {
         fileName = urlOutput + colorSpace + "/gray" + colorSpace.substr(i-3,1) + fileType;
-        gettimeofday(&timeStart, NULL);
+        
+        c_start = clock();
         mCvt1.cvtGrayChannel(matFrom, image,i-3);
-        gettimeofday(&timeStop, NULL);
-        cout << "Run time: " << (timeStop.tv_sec*1000 + timeStop.tv_usec/1000) - (timeStart.tv_sec*1000 + timeStart.tv_usec/1000) << endl;
+        c_end = clock();
+        cout << "Run time Gray: " << 1000.0 * (c_end-c_start) / CLOCKS_PER_SEC << " ms\n";
 
         imwrite(fileName, image);
     }
+    c_start = clock();
     mCvt1.cvtGray(matFrom, image);
+    c_end = clock();
+    cout << "Run time Gray all: " << 1000.0 * (c_end-c_start) / CLOCKS_PER_SEC << " ms\n";
+    
     imwrite(urlOutput + colorSpace + "/grayAll.png", image);
 }
 
