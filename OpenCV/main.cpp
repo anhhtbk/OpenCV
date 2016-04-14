@@ -59,7 +59,7 @@ void cvtGrayAllChanels(const Mat &matFrom, string colorSpace)
     imwrite(urlOutput + colorSpace + "/grayAll.png", image);
 }
 
-int main()
+int main1()
 {
     Mat rgb, gray, hsv, hsl, binary, grayA;
     
