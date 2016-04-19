@@ -43,7 +43,7 @@ int main()
     namedWindow( result_window, CV_WINDOW_AUTOSIZE );
     
     /// Create Trackbar
-    char* trackbar_label = "Method: \n 0: SQDIFF \n 1: SQDIFF NORMED \n 2: TM CCORR \n 3: TM CCORR NORMED \n 4: TM COEFF \n 5: TM COEFF NORMED";
+    string trackbar_label = "Method: \n 0: SQDIFF \n 1: SQDIFF NORMED \n 2: TM CCORR \n 3: TM CCORR NORMED \n 4: TM COEFF \n 5: TM COEFF NORMED";
     createTrackbar( trackbar_label, image_window, &match_method, max_Trackbar, MatchingMethod );
     
     MatchingMethod( 0, 0 );
@@ -85,8 +85,8 @@ void MatchingMethod( int, void* )
     double matchAngle = 0, matchScale = 1;
     
     double angle = 0, scale = 1;
-    for (angle = 0; angle < 360; angle+=45) {
-        for (scale = 0.5; scale < 2; scale += 0.5) {
+//    for (angle = 0; angle < 360; angle+=45) {
+//        for (scale = 0.5; scale < 2; scale += 0.5) {
             img.copyTo(source);
             rotateWarpImage(source, angle, scale);
             
@@ -96,9 +96,9 @@ void MatchingMethod( int, void* )
             int result_cols =  source.cols - templ.cols + 1;
             int result_rows = source.rows - templ.rows + 1;
             
-            if (result_cols <= 0 || result_rows <= 0) {
-                break;
-            }
+//            if (result_cols <= 0 || result_rows <= 0) {
+//                break;
+//            }
     
             result.create( result_rows, result_cols, CV_32FC1 );
             
@@ -131,8 +131,8 @@ void MatchingMethod( int, void* )
                 }
                 
             }
-        }
-    }
+//        }
+//    }
 
     
     

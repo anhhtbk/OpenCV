@@ -324,6 +324,33 @@ void MyCvtColor::cvtGray(const Mat &matFrom, Mat &matTo, double c1, double c2, d
     }
 }
 
+void MyCvtColor::cvtContrast(const Mat &matFrom, Mat &matTo, double alpha, double beta)
+{
+    CvSize s = matFrom.size();
+    
+    matTo = cvCreateMat(s.height, s.width, CV_8UC3);
+    int w = s.width;
+    int h = s.height;
+    if (matFrom.isContinuous() && matTo.isContinuous()) {
+        int size = w*h;
+        uchar *to = matTo.ptr(0);
+        const uchar *from = matFrom.ptr(0);
+        for (int i = 0; i < size; i++) {
+            to[i] = alpha * from[i] + beta;
+        }
+    }
+    else
+    {
+        for (int  i = 0; i < h; i++) {
+            const uchar *from = matFrom.ptr(i);
+            uchar *to = matTo.ptr(i);
+            for (int j = 0; j < w; j++) {
+                to[j] = alpha * from[j] + beta;
+            }
+        }
+    }
+}
+
 MyCvtColor::~MyCvtColor(void){
     
 }

@@ -38,7 +38,9 @@ namespace myCv {
         void cvtGrayChannel(const Mat &matFrom, Mat &matTo, int color);
         
         void cvtGray(const Mat &matFrom, Mat &matTo, double c1 = 1, double c2 = 1, double c3 = 1);
-             
+        
+        void cvtContrast(const Mat &matFrom, Mat &matTo, double alpha, double beta);
+        
         ~MyCvtColor(void);
     };
     
