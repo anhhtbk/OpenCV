@@ -31,7 +31,7 @@ void unRotateWarpImage(Mat &img, double angle, double scale);
 /**
  * @function main
  */
-int main()
+int main1()
 {
     /// Load image and template
     img = imread( "/Users/vmio69/Desktop/OpenCV/1.jpg", 1 );

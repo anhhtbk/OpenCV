@@ -10,7 +10,7 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/core/core.hpp"
-#include "MyCvtColor.hpp"
+#include "MyOpenCV.hpp"
 #include "sys/time.h"
 
 using namespace cv;
@@ -18,9 +18,9 @@ using namespace std;
 using namespace myCv;
 
 const string urlOutput = "/Users/vmio69/Desktop/OpenCV/Output/";
-const string urlInput = "/Users/vmio69/Desktop/OpenCV/flower.jpg";
+const string urlInput = "/Users/vmio69/Desktop/OpenCV/1.jpg";
 
-static MyCvtColor mCvt1 = MyCvtColor();
+static MyOpenCV mCvt1 = MyOpenCV();
 
 
 void cvtGrayAllChanels(const Mat &matFrom, string colorSpace)
@@ -59,30 +59,37 @@ void cvtGrayAllChanels(const Mat &matFrom, string colorSpace)
     imwrite(urlOutput + colorSpace + "/grayAll.png", image);
 }
 
-int main1()
+int main()
 {
-    Mat rgb, gray, hsv, hsl, binary, grayA;
+    Mat rgb, gray, hsv, hsl, binary, grayA, X, img, templ;
     
-    MyCvtColor mCvt = MyCvtColor();
+    MyOpenCV mCvt = MyOpenCV();
     
-    rgb = imread(urlInput, CV_LOAD_IMAGE_COLOR);
-    imshow("rgb", rgb);
-
-    cvtGrayAllChanels(rgb, "BGR");
+    img = imread( "/Users/vmio69/Desktop/OpenCV/1.jpg", 1 );
+    templ = imread( "/Users/vmio69/Desktop/OpenCV/temp.png", 1 );
     
-    mCvt.cvtColor(rgb, hsv, BGR2HSV);
-    cvtGrayAllChanels(hsv, "HSV");
-    imwrite(urlOutput+"HSV/hsv.bmp",hsv);
+    mCvt.drawResultMatching(img, templ, MCV_SQDIFF);
     
-    cv::cvtColor(rgb, hsv, CV_BGR2HSV);
-    imwrite(urlOutput+"HSV/hsv_sample.bmp",hsv);
-    
-    mCvt.cvtColor(rgb, hsl, BGR2HSL);
-    cvtGrayAllChanels(hsl, "HLS");
-    imwrite(urlOutput+"HLS/hls.bmp",hsl);
-    
-    cv::cvtColor(rgb, hsl, CV_BGR2HLS);
-    imwrite(urlOutput+"HLS/hls_sample.bmp",hsl);
+//    rgb = imread(urlInput, CV_LOAD_IMAGE_COLOR);
+//    imshow("rgb", rgb);
+//
+////    mCvt.cvtContrast(rgb, X, 1.5, 10);
+////    imshow("contrast", X);
+//    cvtGrayAllChanels(rgb, "BGR");
+//    
+//    mCvt.cvtColor(rgb, hsv, BGR2HSV);
+//    cvtGrayAllChanels(hsv, "HSV");
+//    imwrite(urlOutput+"HSV/hsv.bmp",hsv);
+//    
+//    cv::cvtColor(rgb, hsv, CV_BGR2HSV);
+//    imwrite(urlOutput+"HSV/hsv_sample.bmp",hsv);
+//    
+//    mCvt.cvtColor(rgb, hsl, BGR2HSL);
+//    cvtGrayAllChanels(hsl, "HLS");
+//    imwrite(urlOutput+"HLS/hls.bmp",hsl);
+//    
+//    cv::cvtColor(rgb, hsl, CV_BGR2HLS);
+//    imwrite(urlOutput+"HLS/hls_sample.bmp",hsl);
     
     cout << "done!";
     waitKey(0);

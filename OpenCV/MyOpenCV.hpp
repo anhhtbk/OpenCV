@@ -6,8 +6,8 @@
 //  Copyright © 2016 VMio69. All rights reserved.
 //
 
-#ifndef MyCvtColor_hpp
-#define MyCvtColor_hpp
+#ifndef MyOpenCV_hpp
+#define MyOpenCV_hpp
 
 #include <stdio.h>
 #include "opencv2/highgui/highgui.hpp"
@@ -18,12 +18,14 @@ namespace myCv {
     enum
     {
         BGR2HSV = 0,
-        BGR2HSL = 1
+        BGR2HSL = 1,
+        MCV_SQDIFF = 2,
+        MCV_SQDIFF_NORMED = 3
     };
-    class MyCvtColor
+    class MyOpenCV
     {
     public:
-        MyCvtColor(void);
+        MyOpenCV(void);
         
         int avg3(int a1, int a2, int a3);
         
@@ -41,7 +43,13 @@ namespace myCv {
         
         void cvtContrast(const Mat &matFrom, Mat &matTo, double alpha, double beta);
         
-        ~MyCvtColor(void);
+        void matchTemplate(const Mat &workImage, const Mat &pattern, int method, double &score, Point &position);
+        
+        void drawResultMatching(const Mat &workImage, const Mat &pattern, int method);
+        
+        void getResultMatching(const Mat &resultMat, bool isMin, double &score, Point &position);
+        
+        ~MyOpenCV(void);
     };
     
 }

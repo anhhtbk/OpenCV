@@ -6,7 +6,7 @@
 //  Copyright © 2016 VMio69. All rights reserved.
 //
 
-#include "MyCvtColor.hpp"
+#include "MyOpenCV.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
 using namespace cv;
@@ -15,16 +15,16 @@ using namespace std;
 
 const string urlOutput = "/Users/vmio69/Desktop/OpenCV/Output/";
 
-MyCvtColor::MyCvtColor(void){
+MyOpenCV::MyOpenCV(void){
     
 }
 
-int MyCvtColor::avg3(int a1, int a2, int a3)
+int MyOpenCV::avg3(int a1, int a2, int a3)
 {
     return (a1+a2+a3)/3;
 }
 
-void MyCvtColor::cvtGray2Binary(const Mat &matGray, Mat &matBinary, int value)
+void MyOpenCV::cvtGray2Binary(const Mat &matGray, Mat &matBinary, int value)
 {
     CvSize s = matGray.size();
     
@@ -67,7 +67,7 @@ void MyCvtColor::cvtGray2Binary(const Mat &matGray, Mat &matBinary, int value)
     
 }
 
-void MyCvtColor::cvtGrayAvg(const Mat &matFrom, Mat &matTo)
+void MyOpenCV::cvtGrayAvg(const Mat &matFrom, Mat &matTo)
 {
     CvSize s = matFrom.size();
     
@@ -99,7 +99,7 @@ void MyCvtColor::cvtGrayAvg(const Mat &matFrom, Mat &matTo)
     }
 }
 
-void MyCvtColor::cvtColor(const Mat &matFrom, Mat &matTo, int code)
+void MyOpenCV::cvtColor(const Mat &matFrom, Mat &matTo, int code)
 {
     CvSize s = matFrom.size();
     
@@ -226,7 +226,7 @@ void MyCvtColor::cvtColor(const Mat &matFrom, Mat &matTo, int code)
     
 }
 
-void MyCvtColor::splitChannel(const Mat &matFrom, Mat &matTo, int channel)
+void MyOpenCV::splitChannel(const Mat &matFrom, Mat &matTo, int channel)
 {
     CvSize s = matFrom.size();
     
@@ -260,7 +260,7 @@ void MyCvtColor::splitChannel(const Mat &matFrom, Mat &matTo, int channel)
     
 }
 
-void MyCvtColor::cvtGrayChannel(const Mat &matFrom, Mat &matTo, int color)
+void MyOpenCV::cvtGrayChannel(const Mat &matFrom, Mat &matTo, int color)
 {
     CvSize s = matFrom.size();
     
@@ -292,7 +292,7 @@ void MyCvtColor::cvtGrayChannel(const Mat &matFrom, Mat &matTo, int color)
     }
 }
 
-void MyCvtColor::cvtGray(const Mat &matFrom, Mat &matTo, double c1, double c2, double c3)
+void MyOpenCV::cvtGray(const Mat &matFrom, Mat &matTo, double c1, double c2, double c3)
 {
     CvSize s = matFrom.size();
     
@@ -324,7 +324,7 @@ void MyCvtColor::cvtGray(const Mat &matFrom, Mat &matTo, double c1, double c2, d
     }
 }
 
-void MyCvtColor::cvtContrast(const Mat &matFrom, Mat &matTo, double alpha, double beta)
+void MyOpenCV::cvtContrast(const Mat &matFrom, Mat &matTo, double alpha, double beta)
 {
     CvSize s = matFrom.size();
     
@@ -332,11 +332,11 @@ void MyCvtColor::cvtContrast(const Mat &matFrom, Mat &matTo, double alpha, doubl
     int w = s.width;
     int h = s.height;
     if (matFrom.isContinuous() && matTo.isContinuous()) {
-        int size = w*h;
+        int size = w*h*3;
         uchar *to = matTo.ptr(0);
         const uchar *from = matFrom.ptr(0);
         for (int i = 0; i < size; i++) {
-            to[i] = alpha * from[i] + beta;
+            to[i] = saturate_cast<uchar>(alpha * from[i] + beta);
         }
     }
     else
@@ -344,13 +344,116 @@ void MyCvtColor::cvtContrast(const Mat &matFrom, Mat &matTo, double alpha, doubl
         for (int  i = 0; i < h; i++) {
             const uchar *from = matFrom.ptr(i);
             uchar *to = matTo.ptr(i);
-            for (int j = 0; j < w; j++) {
+            for (int j = 0; j < w*3; j++) {
                 to[j] = alpha * from[j] + beta;
             }
         }
     }
 }
 
-MyCvtColor::~MyCvtColor(void){
+void MyOpenCV::matchTemplate(const Mat &workImage, const Mat &pattern, int method, double &score, Point &position)
+{
+    CvSize sizeImage = workImage.size();
+    int wI = sizeImage.width,
+        hI = sizeImage.height;
+    CvSize sizePattern = pattern.size();
+    int wP = sizePattern.width,
+        hP = sizePattern.height;
+    
+    int channel = workImage.channels();
+    int wR = wI-wP+1,
+        hR = hI-hP+1;
+    Mat result = cvCreateMat(hR, wR, CV_32FC1);
+    
+    for (int rowR = 0; rowR < hR; rowR++) {
+        
+        uchar *resultRow = result.ptr(rowR);
+        
+        for (int colR = 0; colR < wR; colR++) {
+           
+            resultRow[colR] = 0;
+            
+            double resultChannel[channel];
+            
+            for (int c = 0; c < channel; c++) {
+                for (int rowP = 0; rowP < hP; rowP++) {
+                    
+                    const uchar *imageRow = workImage.ptr(rowR+rowP);
+                    const uchar *pattRow = pattern.ptr(rowP);
+                    
+                    for (int colP = c; colP < wP*channel; colP+=channel) {
+                        
+                        resultChannel[c] += (pattRow[colP] - imageRow[colP])*(pattRow[colP] - imageRow[colP]);
+                        
+                    }
+                }
+                resultRow[colR] += resultChannel[c];
+            }
+            resultRow[colR] /= channel;
+        }
+    }
+    
+    getResultMatching(result, true, score, position);
+    imshow("result", result);
+    
+    switch (method) {
+        case MCV_SQDIFF:
+            
+            break;
+        case MCV_SQDIFF_NORMED:
+            
+            break;
+        default:
+            break;
+    }
+}
+
+void MyOpenCV::drawResultMatching(const Mat &workImage, const Mat &pattern, int method)
+{
+    double score = 0;
+    Point position = Point(0,0);
+    matchTemplate(workImage, pattern, MCV_SQDIFF, score, position);
+    Mat imageDisplay = workImage.clone();
+    rectangle(imageDisplay, position, Point(position.x + pattern.cols, position.y + pattern.rows), Scalar::all(0), 2, 8, 0);
+    imshow("Detect Pattern", imageDisplay);
+    
+}
+
+void MyOpenCV::getResultMatching(const Mat &resultMat, bool isMin, double &score, Point &position)
+{
+    CvSize s = resultMat.size();
+    int w = s.width,
+        h = s.height;
+    int index = 0;
+    if (isMin) {
+        if (resultMat.isContinuous()) {
+            const uchar *mat = resultMat.ptr(0);
+            score = mat[0];
+            for (int i = 1; i < w*h; i++) {
+                if (score > mat[i]) {
+                    score = mat[i];
+                    index = i;
+                }
+            }
+            position = Point(index/w,index%w);
+        }
+    }
+    else
+    {
+        if (resultMat.isContinuous()) {
+            const uchar *mat = resultMat.ptr(0);
+            score = mat[0];
+            for (int i = 1; i < w*h; i++) {
+                if (score < mat[i]) {
+                    score = mat[i];
+                    index = i;
+                }
+            }
+            position = Point(index/w,index%w);
+        }
+    }
+}
+
+MyOpenCV::~MyOpenCV(void){
     
 }
